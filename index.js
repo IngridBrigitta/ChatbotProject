@@ -7,7 +7,7 @@ const pdfParse = require('pdf-parse');
 const session = require('express-session');
 const Groq = require('groq-sdk');
 const { MongoClient } = require('mongodb');
-const mammoth = require("mammoth"); // Mammoth modul importálása
+const mammoth = require("mammoth");
 
 const app = express();
 const port = 3000;
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: 'secret-key',
     resave: false,
     saveUninitialized: true,
 }));

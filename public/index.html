@@ -78,6 +78,7 @@
             document.getElementById("upload").style.display = "";
         }
 
+        //dokumentumok feltöltése
         async function uploadFile() {
             const pdfFileInput = document.getElementById('fileInput');
             const pdfFiles = pdfFileInput.files;
@@ -147,6 +148,7 @@
             return pdfs;
         }
 
+        //PDF megjelenitése az oldalon
         async function displayPDF(index) {
             if (index < 0 || index >= pdfDocs.length) return;
 
@@ -174,6 +176,7 @@
             }
         }
 
+        //lapozás a dokumentumok között
         function showPreviousPDF() {
             if (currentPDFIndex > 0) {
                 currentPDFIndex--;
@@ -188,6 +191,7 @@
             }
         }
 
+        //kliens elküldi az üzenetet - válasz megjelenitése
         async function sendMessage() {
             var userMessage = document.getElementById("userMessage").value;
             var selectedLanguage = document.getElementById("languageSelect").value;
@@ -224,6 +228,7 @@
             document.getElementById("userMessage").value = "";
         }
 
+        //chat ablak formázása, tartalmának meghatározása
         function addMessageToChat(message, imageUrl, messageClass) {
             const chatContainer = document.getElementById('chat-container');
 
@@ -245,23 +250,25 @@
             messageDiv.appendChild(messageText);
 
             chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Automatikusan görgessen le az új üzenethez
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            typeMessage(message, messageText); // Betűnkénti megjelenítés
+            typeMessage(message, messageText);
         }
 
+        //a szöveg gépelési stilusban jelenjen meg
         function typeMessage(message, element) {
             let i = 0;
             function typingEffect() {
                 if (i < message.length) {
                     element.innerHTML += message.charAt(i);
                     i++;
-                    setTimeout(typingEffect, 10); // Sebesség beállítása
+                    setTimeout(typingEffect, 10);
                 }
             }
             typingEffect();
         }
 
+        //chat ablak tartalmának exportolása
         function exportChat() {
             const chatContainer = document.getElementById('chat-container');
             let chatContent = "";
@@ -281,6 +288,7 @@
             URL.revokeObjectURL(url);
         }
 
+        //chat ablak törlése
         function clearChat() {
             const chatContainer = document.getElementById('chat-container');
             chatContainer.innerHTML = `
