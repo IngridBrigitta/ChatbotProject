@@ -1,0 +1,263 @@
+/* Általános stílusok */
+.website {
+    background-color: rgb(137, 238, 238);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 2%;
+}
+
+.description {
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap; /* Mobil eszközökhöz hozzáadva */
+}
+
+.flex-child {
+    padding: 2%;
+}
+
+.flex-child:first-child {
+    flex: 1;
+    margin-right: 0.5%;
+    background-color: rgb(67, 5, 86);
+    border-radius: 10px;
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 26px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+}
+
+.flex-child:last-child {
+    flex: 2.5;
+}
+
+.chat {
+    padding: 10px;
+}
+
+.chat-image {
+    background-color: rgb(67, 5, 86);
+    border-radius: 30%;
+    margin-right: 10px;
+    padding: 1%;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+}
+
+.chat-text {
+    margin: 0;
+    background-color: rgb(67, 5, 86);
+    color: ivory;
+    padding: 1.5%;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+    font-size: 15pt;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#message {
+    margin-right: 0.5%;
+}
+
+.chat-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: rgb(122, 88, 184);
+    padding: 2%;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+}
+
+.send-button {
+    background-color: rgb(67, 5, 86);
+    color: ivory;
+    font-size: 17pt;
+    padding: 1.5%;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    margin-left: 1%;
+}
+
+#languageBox {
+    font-size: 14pt;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    margin-left: 1%;
+}
+
+#languageSelect {
+    background-color: rgb(67, 5, 86);
+    font-size: 15pt;
+    padding: 1%;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: ivory;
+}
+
+.upload-button, .page-button {
+    background-color: rgb(122, 88, 184);
+    padding: 3px 10px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 13pt;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.page-button {
+    font-size: 11;
+    background-color: rgb(90, 53, 161);
+}
+
+.upload-button input[type="file"] {
+    display: none;
+}
+
+.upload-button label {
+    cursor: pointer;
+}
+
+.chat-message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.chat-image {
+    margin-right: 10px;
+}
+
+.chat-text {
+    margin: 0;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.user-message .chat-image {
+    order: 2;
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.user-message .chat-text {
+    order: 1;
+}
+
+#pdf-container {
+    width: 100%;
+    height: calc(100vh - 50px);
+    overflow: auto;
+    margin-top: 2%;
+}
+
+canvas {
+    width: 100%;
+}
+
+.sticky-container {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1%;
+}
+
+.sticky-container2 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0%;
+}
+
+.sticky-container3 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 7%;
+}
+
+.sticky-container4 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 19%;
+}
+
+h2 {
+    font-size: 15pt;
+}
+
+.pdf-document {
+    margin-bottom: 1%;
+    padding: 1%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    margin-top: 8%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+/* Média lekérdezések */
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+    }
+
+    .flex-child {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px; /* Add some space between the sections */
+        height: auto; /* Let the height be determined by content */
+    }
+
+    .flex-child:first-child {
+        position: relative;
+        height: auto;
+        overflow: visible;
+    }
+
+    .chat-container {
+        max-height: 300px; /* Reduce chat container height on mobile */
+    }
+
+    .send-button, .upload-button, .page-button {
+        font-size: 14pt; /* Adjust button font size */
+        padding: 10px;
+        margin-bottom: 10px; /* Add space between buttons */
+        width: 100%; /* Make buttons full width */
+    }
+
+    .pdf-document {
+        width: 100%; /* Make PDF container full width */
+    }
+
+    .chat-text {
+        font-size: 12pt; /* Adjust chat text size */
+    }
+
+    .title, .description {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    h2 {
+        font-size: 12pt;
+    }
+}

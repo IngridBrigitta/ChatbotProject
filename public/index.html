@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="user.png" type="image/icon type">
+    <title>Chatting With AI Based On Pdf</title>
+</head>
+<body class="website">
+
+    <div class="flex-container">
+        <div class="flex-child sticky-container">
+            <div style="display: flex; align-items: center;" class="sticky-container2">
+                <label class="upload-button" for="fileInput">Choose PDF Files</label>
+                <input type="file" id="fileInput" accept=".pdf" multiple onchange="chooseFile()"/>
+                <label class="upload-button" for="docxFileInput">Choose DOCX Files</label>
+                <input type="file" id="docxFileInput" accept=".docx" multiple onchange="chooseDocxFile()"/>
+                <button class="upload-button" onclick="uploadFile()" id="upload" style="display: none;">Upload Files</button>
+            </div>
+            <div class="sticky-container3">
+                <button id="prev-button" class="page-button" onclick="showPreviousPDF()" style="display: none;">Previous</button>
+                <button id="next-button" class="page-button" onclick="showNextPDF()" style="display: none;">Next</button>
+            </div>
+            <img src="AI.jpg" id="image">
+            <div id="pdf-container">
+                <div id="pdf-pages"></div>
+            </div>
+        </div>
+
+        <div class="flex-child">
+            <h1 class="title">Chatting With AI Based On Pdf</h1>
+            <h2 class="description">
+                <i>
+                    This website helps you easily navigate a text file. Upload PDF documents, ask questions about them, 
+                    and we will strive to answer based on the information within.
+                </i>
+            </h2>
+            <div class="chat-container" id="chat-container">
+                <div class="chat-message">
+                    <img src="robot.png" width="5%" height="5%" class="chat-image">
+                    <p class="chat-text">What can I do for you?</p>
+                </div>
+            </div>
+            <div class="chat" id="chat2">
+                <div class="chat-message">
+                    <img src="person.png" width="5%" height="5%" class="chat-image">
+                    <textarea class="chat-text" id="userMessage" rows="3" cols="60"></textarea>
+                    <button class="send-button" onclick="sendMessage()">Send</button>
+                    <label id="languageBox" for="languageSelect">Select Language:</label>
+                        <select id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="hu">Hungarian</option>
+                        </select>
+                </div>
+            </div>
+            <div style="display:inline">
+                <button class="export-button send-button" onclick="exportChat()">Export Chat</button>
+                <button class="clear-chat-button send-button" onclick="clearChat()">Clear Chat</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script>
+        let pdfDocs = [];
+        let docxDocs = [];
+        let currentPDFIndex = 0;
+        document.getElementById("fileInput").style.display = "none";
+        document.getElementById("docxFileInput").style.display = "none";
+        document.getElementById("pdf-container").style.display = "none";
+
+        function chooseFile() {
+            document.getElementById("upload").style.display = "";
+        }
+
+        function chooseDocxFile() {
+            document.getElementById("upload").style.display = "";
+        }
+
+        async function uploadFile() {
+            const pdfFileInput = document.getElementById('fileInput');
+            const pdfFiles = pdfFileInput.files;
+
+            const docxFileInput = document.getElementById('docxFileInput');
+            const docxFiles = docxFileInput.files;
+
+            const formData = new FormData();
+
+            if (pdfFiles.length > 0) {
+                for (let i = 0; i < pdfFiles.length; i++) {
+                    formData.append('files', pdfFiles[i]);
+                }
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("PDF files uploaded successfully!");
+                    document.getElementById("chat2").style.display = "block";
+                    pdfDocs = await loadPDFs(pdfFiles);
+                    displayPDF(currentPDFIndex);
+                    document.getElementById("prev-button").style.display = pdfDocs.length > 1 ? "" : "none";
+                    document.getElementById("next-button").style.display = pdfDocs.length > 1 ? "" : "none";
+                } else {
+                    alert("Error uploading PDF files.");
+                }
+            }
+
+            if (docxFiles.length > 0) {
+                for (let i = 0; i < docxFiles.length; i++) {
+                    formData.append('files', docxFiles[i]);
+                }
+
+                const response = await fetch('/upload-docx', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("DOCX files uploaded successfully!");
+                    document.getElementById("chat2").style.display = "block";
+                    pdfDocs = await loadPDFs(pdfFiles);
+                    displayPDF(currentPDFIndex);
+                    document.getElementById("prev-button").style.display = pdfDocs.length > 1 ? "" : "none";
+                    document.getElementById("next-button").style.display = pdfDocs.length > 1 ? "" : "none";
+                } else {
+                    alert("Error uploading DOCX files.");
+                }
+            }
+
+            document.getElementById("image").style.display = "none";
+            document.getElementById("pdf-container").style.display = "";
+        }
+
+
+        async function loadPDFs(files) {
+            const pdfs = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                pdfs.push(pdf);
+            }
+            return pdfs;
+        }
+
+        async function displayPDF(index) {
+            if (index < 0 || index >= pdfDocs.length) return;
+
+            const pdf = pdfDocs[index];
+            const pdfPagesContainer = document.getElementById('pdf-pages');
+            pdfPagesContainer.innerHTML = '';
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({ scale: 1.5 });
+                
+                const canvas = document.createElement('canvas');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                const context = canvas.getContext('2d');
+                
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                
+                await page.render(renderContext).promise;
+                
+                pdfPagesContainer.appendChild(canvas);
+            }
+        }
+
+        function showPreviousPDF() {
+            if (currentPDFIndex > 0) {
+                currentPDFIndex--;
+                displayPDF(currentPDFIndex);
+            }
+        }
+
+        function showNextPDF() {
+            if (currentPDFIndex < pdfDocs.length - 1) {
+                currentPDFIndex++;
+                displayPDF(currentPDFIndex);
+            }
+        }
+
+        async function sendMessage() {
+            var userMessage = document.getElementById("userMessage").value;
+            var selectedLanguage = document.getElementById("languageSelect").value;
+
+            if (!userMessage) return;
+
+            addMessageToChat(userMessage, 'person.png', 'user-message');
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userMessage, language: selectedLanguage })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Server response:", data);
+
+                if (data.reply) {
+                    addMessageToChat(data.reply, 'robot.png', 'robot-message');
+                } else {
+                    console.error("No reply in server response:", data);
+                }
+            } catch (error) {
+                console.error("Error during fetch:", error);
+            }
+
+            document.getElementById("userMessage").value = "";
+        }
+
+        function addMessageToChat(message, imageUrl, messageClass) {
+            const chatContainer = document.getElementById('chat-container');
+
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message');
+            if (messageClass) {
+                messageDiv.classList.add(messageClass);
+            }
+
+            const messageImage = document.createElement('img');
+            messageImage.src = imageUrl;
+            messageImage.width = 30;
+            messageImage.height = 30;
+            messageImage.classList.add('chat-image');
+
+            const messageText = document.createElement('p');
+            messageText.classList.add('chat-text');
+            messageDiv.appendChild(messageImage);
+            messageDiv.appendChild(messageText);
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Automatikusan görgessen le az új üzenethez
+
+            typeMessage(message, messageText); // Betűnkénti megjelenítés
+        }
+
+        function typeMessage(message, element) {
+            let i = 0;
+            function typingEffect() {
+                if (i < message.length) {
+                    element.innerHTML += message.charAt(i);
+                    i++;
+                    setTimeout(typingEffect, 10); // Sebesség beállítása
+                }
+            }
+            typingEffect();
+        }
+
+        function exportChat() {
+            const chatContainer = document.getElementById('chat-container');
+            let chatContent = "";
+
+            chatContainer.querySelectorAll('.chat-message').forEach(message => {
+                const messageText = message.querySelector('.chat-text').innerText;
+                const sender = message.querySelector('.chat-image').src.includes('robot.png') ? 'AI: ' : 'You: ';
+                chatContent += `${sender}${messageText}\n\n`;
+            });
+
+            const blob = new Blob([chatContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chat.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearChat() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML = `
+                <div class="chat-message">
+                    <img src="robot.png" width="5%" height="5%" class="chat-image">
+                    <p class="chat-text">What can I do for you?</p>
+                </div>
+            `;
+        }
+
+    </script>
+</body>
+</html>
